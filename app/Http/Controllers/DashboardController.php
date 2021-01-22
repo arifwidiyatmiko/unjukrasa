@@ -6,6 +6,7 @@ use App\Imports\DemoImport;
 use App\User;
 use App\Demonstration;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -14,9 +15,26 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request)
+
+    public function __construct()
     {
-        return view('dashboard.dashboard.index');
+        // session(['key' => 'value']);
+    }
+
+    public function index(Request $request)
+    {   
+        // $data['currentDate'] = \Carbon\Carbon::now();
+        // $data['agoDate'] = $data['currentDate']->subDays($data['currentDate']->dayOfWeek)->subWeek();
+
+        $data['currentDate'] =  \Carbon\Carbon::createFromFormat('Y-m-d', '2020-09-09');
+        $data['agoDate'] =  \Carbon\Carbon::createFromFormat('Y-m-d', '2020-09-02');
+        $data['demonstration'] = Demonstration::where('date','<=',$data['currentDate']->format('Y-m-d'))->where('date','>=',$data['agoDate']->format('Y-m-d'))->get();
+        $data['alience'] = $data['demonstration']->map(function($item,$key){
+            return $item->alliencePic->allience;
+        })->unique();
+        $data['demonstration'] = $data['demonstration']->unique();
+        // return dd($data);
+        return view('dashboard.dashboard.index',$data);
     }
     public function importView(Request $request)
     {

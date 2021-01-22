@@ -16,8 +16,8 @@ class Demonstration extends Model
         return $this->hasOne('App\Location', 'id_location', 'id');
     }
 
-    function allience()
+    function alliencePic()
     {
-        return $this->hasOne('App\AlliencePic', 'id_allience', 'id');
+        return $this->hasOne('App\AlliencePic', 'id', 'id_allience');
     }
 }
