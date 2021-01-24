@@ -14,20 +14,20 @@
             1 Minggu terakhir
         </button>
         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-            <a class="dropdown-item" href="#">1 Minggu terakhir</a>
-            <a class="dropdown-item" href="#">1 Bulan  terakhir</a>
-            <a class="dropdown-item" href="#">3 Bulan  terakhir</a>
-            <a class="dropdown-item" href="#">Pilih Tanggal</a>
+            <a class="dropdown-item" href="{{URL::to('dashboard?t=week')}}">1 Minggu terakhir</a>
+            <a class="dropdown-item" href="{{URL::to('dashboard?t=month')}}">1 Bulan  terakhir</a>
+            <a class="dropdown-item" href="{{URL::to('dashboard?t=3month')}}">3 Bulan  terakhir</a>
+            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modalDatepicker">Pilih Tanggal</a>
         </div>
     </div>
 
     <!-- Content Row -->
     
     <div class="row">
-        <div class="col-xs-12 col-lg-6 row">
+        <div class="col-xs-12 col-lg-12 row">
             
             <!-- Earnings (Monthly) Card Example -->
-            <div class="col-xs-12 col-sm-6 mt-1">
+            <div class="col-lg-3 col-xs-12 col-md-6 mt-1">
                 <div class="card border-left-primary shadow h-100 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
@@ -42,7 +42,7 @@
             </div>
     
             <!-- Earnings (Monthly) Card Example -->
-            <div class="col-xs-12 col-sm-6 mt-1">
+            <div class="col-lg-3 col-xs-12 col-md-6 mt-1">
                 <div class="card border-left-success shadow h-100 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
@@ -55,8 +55,38 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-lg-3 col-xs-12 col-md-6 mt-1">
+                <div class="card border-left-danger shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                     Total Lokasi</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{$location->count()}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-lg-3 col-xs-12 col-md-6 mt-1">
+                <div class="card border-left-warning shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                    Jumlah Masa Terbanyak</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{$max_massa}} Orang</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
     
-            <div class="col-xs-12 col-sm-12 mt-1 ">
+            <div class="col-xs-12 col-sm-12 mt-2 ">
                 <div class="card shadow mb-4">
                     <!-- Card Header - Accordion -->
                     <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse"
@@ -73,34 +103,113 @@
             </div>
     
         </div>
-        <div class="col-xs-12 col-lg-6 row">
-            <!-- Earnings (Monthly) Card Example -->
-            <div class="col-xs-12 col-sm-6 mt-1">
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Lokasi Tersering</h6>
-                    </div>
-                    <div class="card-body">
-                        The styling for this basic card example is created by using default Bootstrap
-                        utility classes. By using utility classes, the style of the card component can be
-                        easily modified with no need for any custom CSS!
+        <div class="col-xs-12 col-lg-12 ">
+            <div class="row">
+                <div class="col-12 mt-1">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Demonstrasi</h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-hover" id="table_demo">
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Lokasi</th>
+                                        <th>Aliansi</th>
+                                        <th>Jumlah Orang</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (empty($demonstration))
+                                        <tr>
+                                            <td colspan="4" class="text-center">Tidak Ada data</td>
+                                        </tr>
+                                    @else
+                                        @foreach ($demonstration as $key => $value)
+                                        <tr>
+                                            <td>{{$value->date}}</td>
+                                            <td>{{$value->location->building_name}}</td>
+                                            <td>{{$value->alliencePic->allience->allience_name}}</td>
+                                            <td>{{$value->mass_amount}}</td>
+                                        </tr>
+                                        @endforeach
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-    
-            <!-- Earnings (Monthly) Card Example -->
-            <div class="col-xs-12 col-sm-6 mt-1">
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Aliansi Tersering</h6>
+
+            <div class="row">
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xs-12  col-sm-6 mt-1">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Lokasi Tersering</h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Nama Lokasi</th>
+                                        <th>Jumlah</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (empty($top_location))
+                                        <tr>
+                                            <td colspan="2" class="text-center">Tidak Ada data</td>
+                                        </tr>
+                                    @else
+                                        @foreach ($top_location as $key => $value)
+                                        <tr>
+                                            <td>{{$key}}</td>
+                                            <td>{{$value}}</td>
+                                        </tr>
+                                        @endforeach
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        The styling for this basic card example is created by using default Bootstrap
-                        utility classes. By using utility classes, the style of the card component can be
-                        easily modified with no need for any custom CSS!
+                </div>
+        
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xs-12  col-sm-6 mt-1">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Aliansi Tersering</h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Nama Lokasi</th>
+                                        <th>Jumlah</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (empty($top_alience))
+                                        <tr>
+                                            <td colspan="2" class="text-center">Tidak Ada data</td>
+                                        </tr>
+                                    @else
+                                        @foreach ($top_alience as $key => $value)
+                                        <tr>
+                                            <td>{{$key}}</td>
+                                            <td>{{$value}}</td>
+                                        </tr>
+                                        @endforeach
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
+            
         </div>
     </div>
 
@@ -112,9 +221,13 @@
 <script src="{{asset('vendor/chart.js/Chart.min.js')}}"></script>
 <script src="{{asset('vendor/chart.js/utils.js')}}"></script>
 <script>
+    $(document).ready(function(){
+        $('#table_demo').dataTable();
+    });
+
     var color = Chart.helpers.color;
     var barChartData = {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        labels: ['a', 'v', 'c', 'April', 'May', 'June', 'July','a', 'v', 'c', 'April', 'May', 'June', 'July','a', 'v', 'c', 'April', 'May', 'June', 'July'],
         datasets: [{
             label: 'Dataset 1',
             backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
@@ -127,7 +240,22 @@
                 randomScalingFactor(),
                 randomScalingFactor(),
                 randomScalingFactor(),
-                randomScalingFactor()
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+
             ]
         }]
 

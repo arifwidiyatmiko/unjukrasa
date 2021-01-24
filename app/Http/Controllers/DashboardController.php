@@ -7,9 +7,12 @@ use App\User;
 use App\Demonstration;
 
 use Carbon\Carbon;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -23,15 +26,40 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {   
-        // $data['currentDate'] = \Carbon\Carbon::now();
-        // $data['agoDate'] = $data['currentDate']->subDays($data['currentDate']->dayOfWeek)->subWeek();
+        $data['currentDate'] = \Carbon\Carbon::now();
+        switch ($request->t) {
+            case 'week':
+                $data['agoDate'] = \Carbon\Carbon::now()->subWeek();
+                break;
+            case 'month':
+                $data['agoDate'] = \Carbon\Carbon::now()->subMonth();
+                break;
+            case '3month':
+                $data['agoDate'] = \Carbon\Carbon::now()->subMonth(3);
+                break;
+            case 'custom':
+                $data['agoDate'] = \Carbon\Carbon::now()->subMonth(3);
+                break;
+            default:
+                $data['agoDate'] = \Carbon\Carbon::now()->subWeek();
+                break;
+        }
+        // Testing Pake 2 baris dibawah ini
+        // $data['currentDate'] =  \Carbon\Carbon::createFromFormat('Y-m-d', '2020-09-09');
+        // $data['agoDate'] =  \Carbon\Carbon::createFromFormat('Y-m-d', '2020-09-02');
 
-        $data['currentDate'] =  \Carbon\Carbon::createFromFormat('Y-m-d', '2020-09-09');
-        $data['agoDate'] =  \Carbon\Carbon::createFromFormat('Y-m-d', '2020-09-02');
         $data['demonstration'] = Demonstration::where('date','<=',$data['currentDate']->format('Y-m-d'))->where('date','>=',$data['agoDate']->format('Y-m-d'))->get();
+        $data['max_massa'] = $data['demonstration']->max('mass_amount');
         $data['alience'] = $data['demonstration']->map(function($item,$key){
             return $item->alliencePic->allience;
         })->unique();
+        $data['location'] = $data['demonstration']->map(function($item,$key){
+            return $item->location;
+        })->unique();
+        $data['top_alience'] = $data['demonstration']->map(function($item,$key){ return $item->alliencePic->allience; })->countBy('allience_name')->toArray();
+        arsort($data['top_alience']);
+        $data['top_location'] = $data['demonstration']->map(function($item,$key){ return $item->location; })->countBy('building_name')->toArray();
+        arsort($data['top_location']);
         $data['demonstration'] = $data['demonstration']->unique();
         // return dd($data);
         return view('dashboard.dashboard.index',$data);

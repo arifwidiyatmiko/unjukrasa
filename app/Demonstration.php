@@ -13,7 +13,7 @@ class Demonstration extends Model
 
     function location()
     {
-        return $this->hasOne('App\Location', 'id_location', 'id');
+        return $this->hasOne('App\Location', 'id', 'id_location');
     }
 
     function alliencePic()
