@@ -150,7 +150,7 @@
                             <h6 class="m-0 font-weight-bold text-primary">Lokasi Tersering</h6>
                         </div>
                         <div class="card-body">
-                            <table class="table">
+                            <table class="table table-striped">
                                 <thead>
                                     <tr>
                                         <th>Nama Lokasi</th>
@@ -215,21 +215,56 @@
 
 
 </div>
+<!-- Modal -->
+<div class="modal fade" id="modalDatepicker" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Pilih Tanggal</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{{URL::to('dashboard?t=custom')}}" method="get">
+                    {{ csrf_field() }}
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Pilih Tanggal</label>
+                        <input type="text" class="form-control" id="tanggal" name="tanggal"  placeholder="Pilih Tanggal" required>
+                        <small id="emailHelp" class="form-text text-muted">Tanggal awal hingga tanggal akhir.</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary">Tampilkan</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('js')
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script src="{{asset('vendor/chart.js/Chart.min.js')}}"></script>
 <script src="{{asset('vendor/chart.js/utils.js')}}"></script>
 <script>
     $(document).ready(function(){
         $('#table_demo').dataTable();
+        $('input[id="tanggal"]').daterangepicker({
+            locale: {
+                format: 'dd/mm/Y'
+            }
+        });
     });
 
     var color = Chart.helpers.color;
     var barChartData = {
         labels: ['a', 'v', 'c', 'April', 'May', 'June', 'July','a', 'v', 'c', 'April', 'May', 'June', 'July','a', 'v', 'c', 'April', 'May', 'June', 'July'],
         datasets: [{
-            label: 'Dataset 1',
+            label: 'Data Demonstrasi',
             backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
             borderColor: window.chartColors.red,
             borderWidth: 1,

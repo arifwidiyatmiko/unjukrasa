@@ -44,24 +44,24 @@ class DashboardController extends Controller
                 $data['agoDate'] = \Carbon\Carbon::now()->subWeek();
                 break;
         }
-        // Testing Pake 2 baris dibawah ini
-        // $data['currentDate'] =  \Carbon\Carbon::createFromFormat('Y-m-d', '2020-09-09');
-        // $data['agoDate'] =  \Carbon\Carbon::createFromFormat('Y-m-d', '2020-09-02');
-
+        $diffDays = $data['currentDate']->diffInDays($data['agoDate']);
         $data['demonstration'] = Demonstration::where('date','<=',$data['currentDate']->format('Y-m-d'))->where('date','>=',$data['agoDate']->format('Y-m-d'))->get();
         $data['max_massa'] = $data['demonstration']->max('mass_amount');
-        $data['alience'] = $data['demonstration']->map(function($item,$key){
-            return $item->alliencePic->allience;
-        })->unique();
-        $data['location'] = $data['demonstration']->map(function($item,$key){
-            return $item->location;
-        })->unique();
+        $data['alience'] = $data['demonstration']->map(function($item,$key){ return $item->alliencePic->allience; })->unique();
+        $data['location'] = $data['demonstration']->map(function($item,$key){ return $item->location; })->unique();
         $data['top_alience'] = $data['demonstration']->map(function($item,$key){ return $item->alliencePic->allience; })->countBy('allience_name')->toArray();
         arsort($data['top_alience']);
         $data['top_location'] = $data['demonstration']->map(function($item,$key){ return $item->location; })->countBy('building_name')->toArray();
         arsort($data['top_location']);
         $data['demonstration'] = $data['demonstration']->unique();
-        // return dd($data);
+        $data['daily_demo'] = [];
+
+        for ($i = 0; $i < 7; $i++) {
+            // $data['daily_demo'][]=Carbon::parse($today);
+            //   $today = Carbon::parse($today)->addDay()->toDateString();
+        }
+
+        // return dd($diffDays);
         return view('dashboard.dashboard.index',$data);
     }
     public function importView(Request $request)
