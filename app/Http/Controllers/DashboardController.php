@@ -38,7 +38,10 @@ class DashboardController extends Controller
                 $data['agoDate'] = \Carbon\Carbon::now()->subMonth(3);
                 break;
             case 'custom':
-                $data['agoDate'] = \Carbon\Carbon::now()->subMonth(3);
+                $tanggal = $string = str_replace(' ', '', $request->tanggal);
+                $tanggal = explode("-",$tanggal);
+                $data['currentDate'] = \Carbon\Carbon::createFromFormat('d/m/Y', $tanggal[1]);
+                $data['agoDate'] = \Carbon\Carbon::createFromFormat('d/m/Y', $tanggal[0]);
                 break;
             default:
                 $data['agoDate'] = \Carbon\Carbon::now()->subWeek();
@@ -46,7 +49,7 @@ class DashboardController extends Controller
         }
         $diffDays = $data['currentDate']->diffInDays($data['agoDate']);
         $data['demonstration'] = Demonstration::where('date','<=',$data['currentDate']->format('Y-m-d'))->where('date','>=',$data['agoDate']->format('Y-m-d'))->get();
-        $data['max_massa'] = $data['demonstration']->max('mass_amount');
+        $data['max_massa'] = ( $data['demonstration']->max('mass_amount') == null) ? 0:  $data['demonstration']->max('mass_amount');
         $data['alience'] = $data['demonstration']->map(function($item,$key){ return $item->alliencePic->allience; })->unique();
         $data['location'] = $data['demonstration']->map(function($item,$key){ return $item->location; })->unique();
         $data['top_alience'] = $data['demonstration']->map(function($item,$key){ return $item->alliencePic->allience; })->countBy('allience_name')->toArray();
@@ -55,13 +58,16 @@ class DashboardController extends Controller
         arsort($data['top_location']);
         $data['demonstration'] = $data['demonstration']->unique();
         $data['daily_demo'] = [];
-
-        for ($i = 0; $i < 7; $i++) {
-            // $data['daily_demo'][]=Carbon::parse($today);
-            //   $today = Carbon::parse($today)->addDay()->toDateString();
+        $data['days'] = [];
+        for ($i = 0; $i <= $diffDays; $i++) {
+            if ($i == 0) {
+                $temp = $data['agoDate']->toDateString();
+            }else{
+                $temp = $data['agoDate']->addDays()->toDateString();
+            }
+            $data['days'][] = $temp;
+            $data['daily_demo'][] = Demonstration::where('date','=',$temp)->count();
         }
-
-        // return dd($diffDays);
         return view('dashboard.dashboard.index',$data);
     }
     public function importView(Request $request)

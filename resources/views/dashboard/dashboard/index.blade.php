@@ -114,6 +114,7 @@
                             <table class="table table-hover" id="table_demo">
                                 <thead>
                                     <tr>
+                                        <th>#</th>
                                         <th>Tanggal</th>
                                         <th>Lokasi</th>
                                         <th>Aliansi</th>
@@ -128,6 +129,7 @@
                                     @else
                                         @foreach ($demonstration as $key => $value)
                                         <tr>
+                                            <td>{{$key+1}}</td>
                                             <td>{{$value->date}}</td>
                                             <td>{{$value->location->building_name}}</td>
                                             <td>{{$value->alliencePic->allience->allience_name}}</td>
@@ -153,11 +155,13 @@
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
+                                        <th>#</th>
                                         <th>Nama Lokasi</th>
                                         <th>Jumlah</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php $counter =1; @endphp
                                     @if (empty($top_location))
                                         <tr>
                                             <td colspan="2" class="text-center">Tidak Ada data</td>
@@ -165,9 +169,11 @@
                                     @else
                                         @foreach ($top_location as $key => $value)
                                         <tr>
+                                            <th>{{$counter }}</th>
                                             <td>{{$key}}</td>
                                             <td>{{$value}}</td>
                                         </tr>
+                                        @php $counter++; @endphp
                                         @endforeach
                                     @endif
                                 </tbody>
@@ -186,8 +192,9 @@
                             <table class="table">
                                 <thead>
                                     <tr>
+                                        <th>#</th>
                                         <th>Nama Lokasi</th>
-                                        <th>Jumlah</th>
+                                        <th>Jumlah Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -196,11 +203,14 @@
                                             <td colspan="2" class="text-center">Tidak Ada data</td>
                                         </tr>
                                     @else
+                                        @php $i=1; @endphp
                                         @foreach ($top_alience as $key => $value)
                                         <tr>
+                                            <th>{{$i}}</th>
                                             <td>{{$key}}</td>
                                             <td>{{$value}}</td>
                                         </tr>
+                                        @php $i++; @endphp
                                         @endforeach
                                     @endif
                                 </tbody>
@@ -226,10 +236,10 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{URL::to('dashboard?t=custom')}}" method="get">
-                    {{ csrf_field() }}
+                <form action="{{URL::to('dashboard?t=custom')}}" method="get" id="form-custom">
                     <div class="form-group">
                         <label for="exampleInputEmail1">Pilih Tanggal</label>
+                        <input type="hidden" value="custom" name="t">
                         <input type="text" class="form-control" id="tanggal" name="tanggal"  placeholder="Pilih Tanggal" required>
                         <small id="emailHelp" class="form-text text-muted">Tanggal awal hingga tanggal akhir.</small>
                     </div>
@@ -237,7 +247,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary">Tampilkan</button>
+                <button type="submit" form="form-custom" class="btn btn-primary">Tampilkan</button>
             </div>
         </div>
     </div>
@@ -255,43 +265,20 @@
         $('#table_demo').dataTable();
         $('input[id="tanggal"]').daterangepicker({
             locale: {
-                format: 'dd/mm/Y'
+                format: 'DD/MM/YYYY',
             }
         });
     });
 
     var color = Chart.helpers.color;
     var barChartData = {
-        labels: ['a', 'v', 'c', 'April', 'May', 'June', 'July','a', 'v', 'c', 'April', 'May', 'June', 'July','a', 'v', 'c', 'April', 'May', 'June', 'July'],
+        labels: @php echo json_encode($days); @endphp.map(String),
         datasets: [{
             label: 'Data Demonstrasi',
             backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
             borderColor: window.chartColors.red,
             borderWidth: 1,
-            data: [
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-
-            ]
+            data: @php echo json_encode($daily_demo); @endphp.map(Number)
         }]
 
     };
@@ -305,8 +292,15 @@
                 responsive: true,
                 legend: {
                     position: 'top',
+                },
+            },
+            yAxes: [{
+                barPercentage: 0.5,
+                min:0,
+                gridLines: {
+                    display: false
                 }
-            }
+            }],
         });
 
     };
