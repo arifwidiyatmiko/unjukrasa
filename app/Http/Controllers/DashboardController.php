@@ -84,7 +84,7 @@ class DashboardController extends Controller
         if ($valid->fails()) {
             return Redirect::to(url()->previous())->withErrors($valid);
         } else {
-            Excel::import(new DemoImport, request()->file('inputFile'));
+            Excel::import(new DemoImport, request()->file('inputFile'),'UTF-8');
             return Redirect::to('dashboard/location');
         }
     }

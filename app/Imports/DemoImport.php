@@ -40,11 +40,22 @@ class DemoImport implements ToCollection, WithStartRow
         foreach ($collection as $row) {
             $alience[] = [
                 'allience_name' => strtoupper(trim($row[7])),
+                // 'allience_name' => str_replace('-','',strtoupper(trim($row[7]))),
             ];
         }
         $alience = collect($alience)->unique();
+        // return dd($alience);
         foreach ($alience as $key => $value) {
-                Aliance::create($value);
+                if(Aliance::where('allience_name','=',$value)->count() == 0){
+                    try {
+                        Aliance::create($value);
+                      } catch (\Illuminate\Database\QueryException $exception) {
+                        return dd(['daskdo'=>$exception,'sds'=>$key]);
+                      }
+                }
+                // else{
+                //     return dd($value);
+                // }
         }
         foreach ($collection as $row) {
             $aliencepic[] = [
