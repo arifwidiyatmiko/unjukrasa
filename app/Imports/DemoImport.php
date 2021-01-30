@@ -34,28 +34,30 @@ class DemoImport implements ToCollection, WithStartRow
         $branch = collect($branch)->unique();
         foreach ($branch as $key => $value) {
             if ($value['name'] != NULL) {
-                Branch::create($value);
+                if(Branch::where('name','=',$value['name'])->count() == 0){
+                    try {
+                        Branch::create($value);
+                    } catch (\Illuminate\Database\QueryException $exception) {
+                        return dd(['exception'=>$exception,'branch_row'=>$key]);
+                    }
+                }
             }
         }
         foreach ($collection as $row) {
             $alience[] = [
                 'allience_name' => strtoupper(trim($row[7])),
-                // 'allience_name' => str_replace('-','',strtoupper(trim($row[7]))),
             ];
         }
         $alience = collect($alience)->unique();
         // return dd($alience);
         foreach ($alience as $key => $value) {
-                if(Aliance::where('allience_name','=',$value)->count() == 0){
-                    try {
-                        Aliance::create($value);
-                      } catch (\Illuminate\Database\QueryException $exception) {
-                        return dd(['daskdo'=>$exception,'sds'=>$key]);
-                      }
-                }
-                // else{
-                //     return dd($value);
-                // }
+            if(Aliance::where('allience_name','=',$value)->count() == 0){
+                try {
+                    Aliance::create($value);
+                    } catch (\Illuminate\Database\QueryException $exception) {
+                    return dd(['daskdo'=>$exception,'sds'=>$key]);
+                    }
+            }
         }
         foreach ($collection as $row) {
             $aliencepic[] = [
