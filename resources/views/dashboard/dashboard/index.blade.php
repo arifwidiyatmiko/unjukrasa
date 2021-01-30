@@ -11,7 +11,7 @@
                 class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> --}}
         {{-- <p class="h4 mb-0 text-gray">asda</p> --}}
         <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            1 Minggu terakhir
+            {{$currentChoice}}
         </button>
         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
             <a class="dropdown-item" href="{{URL::to('dashboard?t=week')}}">1 Minggu terakhir</a>

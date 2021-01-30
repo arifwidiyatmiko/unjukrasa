@@ -30,21 +30,26 @@ class DashboardController extends Controller
         switch ($request->t) {
             case 'week':
                 $data['agoDate'] = \Carbon\Carbon::now()->subWeek();
+                $data['currentChoice'] = '1 Minggu';
                 break;
             case 'month':
                 $data['agoDate'] = \Carbon\Carbon::now()->subMonth();
+                $data['currentChoice'] = '1 Bulan';
                 break;
             case '3month':
                 $data['agoDate'] = \Carbon\Carbon::now()->subMonth(3);
+                $data['currentChoice'] = '3 Bulan';
                 break;
             case 'custom':
                 $tanggal = $string = str_replace(' ', '', $request->tanggal);
                 $tanggal = explode("-",$tanggal);
                 $data['currentDate'] = \Carbon\Carbon::createFromFormat('d/m/Y', $tanggal[1]);
                 $data['agoDate'] = \Carbon\Carbon::createFromFormat('d/m/Y', $tanggal[0]);
+                $data['currentChoice'] = 'Kostum Tanggal';
                 break;
             default:
                 $data['agoDate'] = \Carbon\Carbon::now()->subWeek();
+                $data['currentChoice'] = '1 Minggu';
                 break;
         }
         $diffDays = $data['currentDate']->diffInDays($data['agoDate']);
