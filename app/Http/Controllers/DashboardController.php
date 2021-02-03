@@ -196,7 +196,7 @@ class DashboardController extends Controller
                     return Redirect::to('dashboard');
                 }
             } else {
-                return Redirect::to('login')->withErrors(['message' => 'Akun Tidak ditemukan atau Tidak Aktif']);
+                return Redirect::to('login')->with(['message' => 'Akun Tidak ditemukan atau Tidak Aktif']);
             }
         }
     }

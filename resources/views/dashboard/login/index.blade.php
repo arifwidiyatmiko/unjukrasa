@@ -43,7 +43,7 @@
                                         <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                                     </div>
                                     @if (Session::has('message'))
-                                    <label id="pass-error" class="error text text-danger" for="pass">{!! session('message') !!}</label>
+                                    <label id="pass-error" class="text text-danger" for="pass">{!! session('message') !!}</label>
                                     @endif
                                     <form class="user" action="{{URL::to('login')}}" method="POST">
                                         {{ csrf_field() }}
