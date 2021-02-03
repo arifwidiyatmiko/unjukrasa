@@ -15,7 +15,7 @@
 
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Update Lokasi</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Update User</h6>
                 </div>
                 <div class="card-body">
                     <form action="{{URL::to('dashboard/users/update/'.$user->id)}}" method="post">
@@ -28,7 +28,7 @@
                             <div class="col-sm-6">
                               <label class="sr-only" for="inlineFormInputGroup">Email</label>
                               <div class="input-group mb-2">
-                                <input type="email" class="form-control" id="email" name="email" value="{{explode('@',$user->email)[0]}}" required>
+                                <input type="text" class="form-control" id="email" name="email" value="{{explode('@',$user->email)[0]}}" required>
                                 <div class="input-group-prepend">
                                   <div class="input-group-text">@ai.astra.co.id</div>
                                 </div>

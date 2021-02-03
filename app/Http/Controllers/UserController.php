@@ -62,4 +62,29 @@ class UserController extends Controller
         $data['previous'] = url()->previous();
         return view('dashboard.user.edit',$data);
     }
+
+    public function userDoUpdate(Request $request,$id)
+    {
+        $rules = [
+            'name' => 'required',
+            'email' => 'required',
+        ];
+        if ($request->password) {
+            $rules['password'] = 'regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/';
+        }
+        $valid = Validator::make($request->all(), $rules);
+        if ($valid->fails()) {
+            return Redirect::to(url()->previous())->withErrors($valid);
+        } else {
+            $data = [
+                'name'             => $request->name,
+                'email'             => $request->email."@ai.astra.co.id",
+            ];
+            if ($request->password) {
+                $data['password'] = bcrypt($request->password);
+            }
+            User::where('id','=',$id)->update($data);
+            return Redirect::to('dashboard/users');
+        }
+    }
 }
