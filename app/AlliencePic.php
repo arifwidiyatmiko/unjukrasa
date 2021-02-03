@@ -16,7 +16,7 @@ class AlliencePic extends Model
         return $this->belongsTo('App\Demonstration', 'id_allience', 'id');
     }
 
-    public function allience(Type $var = null)
+    public function allience()
     {
         return $this->belongsTo('App\Aliance', 'id_allience', 'id');
     }

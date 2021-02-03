@@ -52,6 +52,11 @@
             </div>
         </div>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{URL::to('dashboard/users')}}">
+            <i class="fas fa-user-friends"></i>
+            <span>Manajemen User</span></a>
+    </li>
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">

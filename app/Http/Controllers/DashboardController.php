@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\URL;
 
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
@@ -108,6 +109,69 @@ class DashboardController extends Controller
     {
         return view('dashboard.aliance.index');
     }
+
+    public function demoView(Request $request)
+    {
+        return view('dashboard.demonstration.index');
+    }
+    
+    public function demoData(Request $request)
+    {
+        $columns = array(
+            0 => 'id',
+            1 => 'date',
+            2 => 'location',
+            3 => 'participant',
+            4 => 'mass_amount',
+            5 => 'option',
+        );
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+
+
+        $totalData = Demonstration::count();
+        $totalFiltered = $totalData;
+        if (empty($request->input('search.value'))) {
+            $institutes = Demonstration::offset($start)->limit($limit)->get();
+        } else {
+            $search = $request->input('search.value');
+            $institutes = Demonstration::whereHas('location', function ($query) use ($search) {
+                return $query->where( 'building_name', 'LIKE',  "%{$search}%");
+            })->orWhereHas('alliencePic', function ($query) use ($search) {
+                return $query->whereHas('allience', function ($q) use ($search) {
+                    return $q->where( 'allience_name', 'LIKE',  "%{$search}%");
+                });
+            })->orWhere('mass_amount','LIKE',"%{$search}%")->offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $totalFiltered = Demonstration::whereHas('location', function ($query) use ($search) {
+                return $query->where( 'building_name', 'LIKE',  "%{$search}%");
+            })->orWhereHas('alliencePic', function ($query) use ($search) {
+                return $query->whereHas('allience', function ($q) use ($search) {
+                    return $q->where( 'allience_name', 'LIKE',  "%{$search}%");
+                });
+            })->orWhere('mass_amount','LIKE',"%{$search}%")->offset($start)->limit($limit)->orderBy($order, $dir)->count();
+        }
+        $data = array();
+
+        $data = $institutes->map(function ($item, $key) use ($start) {
+            $item->no = $start + $key + 1;
+            // $item->option = '<a class="btn btn-primary" href="'.URL::to('dashboard/location/update/'.$item->id).'">Update</a>';
+            $item->date_parsed = \Carbon\Carbon::createFromFormat('Y-m-d',$item->date)->format('d M Y');
+            $item->building_name = $item->location->building_name;
+            $item->allience_name = $item->alliencePic->allience->allience_name;
+            return $item;
+        });
+        // return dd($data);
+        $json_data = array(
+            "draw"            => intval($request->input('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $data
+        );
+        return response()->json($json_data);
+    }
+
 
     public function login(Request $request)
     {
