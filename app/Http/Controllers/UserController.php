@@ -43,7 +43,7 @@ class UserController extends Controller
 
         $data = $institutes->map(function ($item, $key) use ($start) {
             $item->no = $start + $key + 1;
-            $item->last_update = \Carbon\Carbon::createFromFormat('Y-m-d h:i:s',$item->updated_at)->format('d M Y h:i');
+            $item->last_update = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$item->updated_at)->format('d M Y H:i');
             $item->option = '<a class="btn btn-primary" href="'.URL::to('dashboard/users/update/'.$item->id).'">Update</a>';
             return $item;
         });
@@ -86,5 +86,31 @@ class UserController extends Controller
             User::where('id','=',$id)->update($data);
             return Redirect::to('dashboard/users');
         }
+    }
+
+    public function create(Request $request)
+    {
+        $data['previous'] = url()->previous();
+        return view('dashboard.user.tambah',$data);
+    }
+    public function insert(Request $request)
+    {$rules = [
+        'name' => 'required',
+        'email' => 'required',
+        'password' => 'regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/',
+    ];
+    $valid = Validator::make($request->all(), $rules);
+    if ($valid->fails()) {
+        return Redirect::to(url()->previous())->withErrors($valid);
+    } else {
+        $data = [
+            'name'             => $request->name,
+            'email'             => $request->email."@ai.astra.co.id",
+            'status'        => TRUE,
+            'password'          => bcrypt($request->password),
+        ];
+        User::create($data);
+        return Redirect::to('dashboard/users');
+    }
     }
 }

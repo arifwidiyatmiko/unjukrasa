@@ -43,6 +43,8 @@ Route::group(['prefix' => 'dashboard', 'middleware' => ['LoginCheck']], function
     });
     Route::group(['prefix' => 'users'], function () {
         Route::get('/', 'UserController@index');
+        Route::get('/tambah', 'UserController@create');
+        Route::post('/tambah', 'UserController@insert');
         Route::get('/data', 'UserController@userData')->name('api.user');
         Route::get('/update/{id}', 'UserController@userUpdate');
         Route::POST('/update/{id}', 'UserController@userDoUpdate');
