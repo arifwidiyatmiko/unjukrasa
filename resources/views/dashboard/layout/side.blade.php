@@ -47,6 +47,7 @@
                 <h6 class="collapse-header">Data:</h6>
                 <a class="collapse-item" href="{{URL::to('dashboard/location')}}">Lokasi</a>
                 <a class="collapse-item" href="{{URL::to('dashboard/alience')}}">Aliansi</a>
+                <a class="collapse-item" href="{{URL::to('dashboard/pic')}}">PIC Aliansi</a>
                 <a class="collapse-item" href="{{URL::to('dashboard/demonstration')}}">Unjuk Rasa</a>
                 <a class="collapse-item" href="{{URL::to('dashboard/province')}}">Provinsi & Kota</a>
             </div>

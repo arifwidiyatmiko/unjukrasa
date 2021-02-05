@@ -31,6 +31,12 @@ Route::group(['prefix' => 'dashboard', 'middleware' => ['LoginCheck']], function
         Route::get('/data', 'DashboardController@demoData')->name('api.demo');
     });
 
+    Route::group(['prefix' => 'pic'], function () {
+        Route::get('/', 'AlianceController@picView');
+        Route::get('/data', 'AlianceController@picData')->name('api.pic');
+        Route::get('/detail/{id}', 'AlianceController@picAllience');
+    });
+
     Route::group(['prefix' => 'province'], function () {
         Route::get('/', 'DashboardController@areaView');
         Route::get('/data', 'LocationController@areaData')->name('api.area');
@@ -48,6 +54,7 @@ Route::group(['prefix' => 'dashboard', 'middleware' => ['LoginCheck']], function
         Route::get('/data', 'UserController@userData')->name('api.user');
         Route::get('/update/{id}', 'UserController@userUpdate');
         Route::POST('/update/{id}', 'UserController@userDoUpdate');
+        Route::get('/delete/{id}', 'UserController@delete');
     });
     Route::group(['prefix' => 'alience'], function () {
         Route::get('/', 'DashboardController@alianceView');

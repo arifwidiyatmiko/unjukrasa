@@ -28,7 +28,7 @@
                             <label for="inputFile">Alamat</label>
                             <input type="text" class="form-control" id="phone" name="phone" value="{{$pic->phone}}" placeholder="Nomor Telepon" required>
                         </div>
-
+                        <input type="hidden" name="redirect_url" value="{{$previous}}">
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
                             <a href="{{$previous}}" class="btn btn-warning">Kembali</a>

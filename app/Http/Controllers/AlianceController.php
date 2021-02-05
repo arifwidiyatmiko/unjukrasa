@@ -100,7 +100,7 @@ class AlianceController extends Controller
                 'phone' => $request->phone,
             ];
             AlliencePic::where('id',$id)->update($data);
-            return Redirect::to('dashboard/alience/detail/'.$id_allience);
+            return Redirect::to($request->redirect_url);
         }
     }
 
@@ -109,5 +109,60 @@ class AlianceController extends Controller
         $data['alience'] = Aliance::findOrFail($id);
         $data['persons'] = AlliencePic::where('id_allience','=',$id)->get();
         return view('dashboard.aliance.detail', $data);
+    }
+
+    public function picAllience(Request $request, $id)
+    {
+        $data['person'] = AlliencePic::where('id','=',$id)->firstOrFail();
+        $data['alience'] = $data['person']->allience;
+        $data['previous'] = url()->previous();
+        return view('dashboard.pic.detail', $data);
+    }
+
+    public function picView(Request $request)
+    {
+        return view('dashboard.pic.index');
+    }
+
+    public function picData(Request $request)
+    {
+        $columns = array(
+            0 => 'id',
+            1 => 'name',
+            2 => 'phone',
+            3 => 'option',
+        );
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+
+
+        $totalData = AlliencePic::count();
+        $totalFiltered = $totalData;
+        if (empty($request->input('search.value'))) {
+            $institutes = AlliencePic::offset($start)->limit($limit)->get();
+        } else {
+            $search = $request->input('search.value');
+            $institutes = AlliencePic::where('name','LIKE',"%{$search}%")->orWhere('phone','LIKE',"%{$search}%")->offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $totalFiltered = AlliencePic::where('name','LIKE',"%{$search}%")->orWhere('phone','LIKE',"%{$search}%")->offset($start)->limit($limit)->orderBy($order, $dir)->count();
+        }
+        $data = array();
+
+        $data = $institutes->map(function ($item, $key) use ($start) {
+            $item->no = $start + $key + 1;
+            $item->option = '<a class="btn btn-primary" href="'.URL::to('dashboard/pic/detail/'.$item->id).'">Detail</a> 
+            <a class="btn btn-warning" href="'.URL::to('dashboard/alience/pic/update/'.$item->id).'">Update</a>';
+            // $item->cityName = ($item->city != NULL) ? $item->city->name : '-';
+            // $item->branch_astra = ($item->branch_astra != FALSE) ? '<p class="text text-danger">YA</p>' : '<p class="text text-black">TIDAK</p>';
+            return $item;
+        });
+        $json_data = array(
+            "draw"            => intval($request->input('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $data
+        );
+        return response()->json($json_data);
     }
 }

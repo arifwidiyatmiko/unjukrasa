@@ -262,7 +262,7 @@
 <script src="{{asset('vendor/chart.js/utils.js')}}"></script>
 <script>
     $(document).ready(function(){
-        $('#table_demo').dataTable();
+        $('.table').dataTable();
         $('input[id="tanggal"]').daterangepicker({
             locale: {
                 format: 'DD/MM/YYYY',

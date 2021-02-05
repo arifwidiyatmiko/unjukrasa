@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Http\Request;
+
 
 class UserController extends Controller
 {
@@ -44,7 +46,11 @@ class UserController extends Controller
         $data = $institutes->map(function ($item, $key) use ($start) {
             $item->no = $start + $key + 1;
             $item->last_update = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$item->updated_at)->format('d M Y H:i');
-            $item->option = '<a class="btn btn-primary" href="'.URL::to('dashboard/users/update/'.$item->id).'">Update</a>';
+            if (Auth::user()->id == $item->id) {
+                $item->option = '<a class="btn btn-primary" href="'.URL::to('dashboard/users/update/'.$item->id).'"><i class="fas fa-user-edit"></i></a> <a class="btn btn-danger disabled" href="'.URL::to('dashboard/users/delete/'.$item->id).'"><i class="fas fa-user-times"></i></a>';
+            } else {
+                $item->option = '<a class="btn btn-primary" href="'.URL::to('dashboard/users/update/'.$item->id).'"><i class="fas fa-user-edit"></i></a> <a class="btn btn-danger" href="'.URL::to('dashboard/users/delete/'.$item->id).'"><i class="fas fa-user-times"></i></a>';
+            }
             return $item;
         });
         $json_data = array(
@@ -79,12 +85,13 @@ class UserController extends Controller
             $data = [
                 'name'             => $request->name,
                 'email'             => $request->email."@ai.astra.co.id",
+
             ];
             if ($request->password) {
                 $data['password'] = bcrypt($request->password);
             }
             User::where('id','=',$id)->update($data);
-            return Redirect::to('dashboard/users');
+            return Redirect::to('dashboard/users')->with('message','Data berhasil di simpan');
         }
     }
 
@@ -110,7 +117,12 @@ class UserController extends Controller
             'password'          => bcrypt($request->password),
         ];
         User::create($data);
-        return Redirect::to('dashboard/users');
+        return Redirect::to('dashboard/users')->with('message','Data berhasil di simpan');
     }
+    }
+
+    public function delete(Request $request,$id){
+        User::where('id','=',$id)->delete();
+        return Redirect::to('dashboard/users')->with('warning','Data berhasil di hapus');
     }
 }
