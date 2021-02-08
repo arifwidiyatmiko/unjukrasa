@@ -85,20 +85,14 @@ class LocationController extends Controller
             $institutes = Location::offset($start)->limit($limit)->get();
         } else {
             $search = $request->input('search.value');
-            $institutes = City::whereHas('province', function ($query) use ($search) {
-                return $query->where(
-                    'name',
-                    'LIKE',
-                    "%{$search}%"
-                )->orWhere('name', 'LIKE', "%{$search}%");
-            })->offset($start)->limit($limit)->orderBy($order, $dir)->get();
-            $totalFiltered = City::whereHas('province', function ($query) use ($search) {
-                return $query->where(
-                    'name',
-                    'LIKE',
-                    "%{$search}%"
-                )->orWhere('name', 'LIKE', "%{$search}%");
-            })->offset($start)->limit($limit)->orderBy($order, $dir)->count();
+            $institutes = Location::where('building_name','LIKE',"%{$search}%")->orWhere('address','LIKE',"%{$search}%")
+                        ->whereHas('city',function($query) use($search){
+                            return $query->where('name','LIKE',"%{$search}%");
+                        })->offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $totalFiltered = Location::where('building_name','LIKE',"%{$search}%")->orWhere('address','LIKE',"%{$search}%")
+                        ->whereHas('city',function($query) use($search){
+                            return $query->where('name','LIKE',"%{$search}%");
+                        })->offset($start)->limit($limit)->orderBy($order, $dir)->count();
         }
         $data = array();
 
