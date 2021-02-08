@@ -32,8 +32,8 @@ class AlianceController extends Controller
             $institutes = Aliance::offset($start)->limit($limit)->get();
         } else {
             $search = $request->input('search.value');
-            $institutes = Aliance::where('name','LIKE',"%{$search}%")->offset($start)->limit($limit)->orderBy($order, $dir)->get();
-            $totalFiltered = Aliance::where('name','LIKE',"%{$search}%")->offset($start)->limit($limit)->orderBy($order, $dir)->count();
+            $institutes = Aliance::where('allience_name','LIKE',"%{$search}%")->offset($start)->limit($limit)->orderBy($order, $dir)->get();
+            $totalFiltered = Aliance::where('allience_name','LIKE',"%{$search}%")->offset($start)->limit($limit)->orderBy($order, $dir)->count();
         }
         $data = array();
 
@@ -151,6 +151,7 @@ class AlianceController extends Controller
 
         $data = $institutes->map(function ($item, $key) use ($start) {
             $item->no = $start + $key + 1;
+            $item->afiliasi = count($item->allience->toArray());
             $item->option = '<a class="btn btn-primary" href="'.URL::to('dashboard/pic/detail/'.$item->id).'">Detail</a> 
             <a class="btn btn-warning" href="'.URL::to('dashboard/alience/pic/update/'.$item->id).'">Update</a>';
             // $item->cityName = ($item->city != NULL) ? $item->city->name : '-';
