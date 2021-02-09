@@ -349,6 +349,7 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script src="{{asset('vendor/chart.js/Chart.min.js')}}"></script>
 <script src="{{asset('vendor/chart.js/utils.js')}}"></script>
+
 <script>
     $(document).ready(function(){
         $('.table').dataTable({        
@@ -397,6 +398,8 @@
             responsive: true
         }
     };
+    
+    @if ($demo_astra_grouped->count() > 0)
     var pieConfig1 = {
         type: 'pie',
         data: {
@@ -419,6 +422,7 @@
             responsive: true
         }
     };
+    @endif
 
     window.onload = function() {
         var ctz = document.getElementById('chart-area1').getContext('2d');
