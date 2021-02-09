@@ -31,14 +31,17 @@ class DashboardController extends Controller
         switch ($request->t) {
             case 'week':
                 $data['agoDate'] = \Carbon\Carbon::now()->subWeek();
+                $data['ago'] = \Carbon\Carbon::now()->subWeek();
                 $data['currentChoice'] = '1 Minggu';
                 break;
             case 'month':
                 $data['agoDate'] = \Carbon\Carbon::now()->subMonth();
+                $data['ago'] = \Carbon\Carbon::now()->subMonth();
                 $data['currentChoice'] = '1 Bulan';
                 break;
             case '3month':
                 $data['agoDate'] = \Carbon\Carbon::now()->subMonth(3);
+                $data['ago'] = \Carbon\Carbon::now()->subMonth(3);
                 $data['currentChoice'] = '3 Bulan';
                 break;
             case 'custom':
@@ -46,16 +49,24 @@ class DashboardController extends Controller
                 $tanggal = explode("-",$tanggal);
                 $data['currentDate'] = \Carbon\Carbon::createFromFormat('d/m/Y', $tanggal[1]);
                 $data['agoDate'] = \Carbon\Carbon::createFromFormat('d/m/Y', $tanggal[0]);
+                $data['ago'] = \Carbon\Carbon::createFromFormat('d/m/Y', $tanggal[0]);
                 $data['currentChoice'] = 'Kostum Tanggal';
                 break;
             default:
                 $data['agoDate'] = \Carbon\Carbon::now()->subWeek();
+                $data['ago'] = \Carbon\Carbon::now()->subWeek();
                 $data['currentChoice'] = '1 Minggu';
                 break;
         }
         $diffDays = $data['currentDate']->diffInDays($data['agoDate']);
         $data['demonstration'] = Demonstration::where('date','<=',$data['currentDate']->format('Y-m-d'))->where('date','>=',$data['agoDate']->format('Y-m-d'))->get();
         $data['max_massa'] = ( $data['demonstration']->max('mass_amount') == null) ? 0:  $data['demonstration']->max('mass_amount');
+        $data['demo_astra'] = $data['demonstration']->filter(function($value,$key){
+            if ($value->location->branch_astra == 1) {
+                return $value;
+            }
+        });
+        $data['demo_astra_grouped'] = $data['demo_astra']->groupBy('status');
         $data['alience'] = $data['demonstration']->map(function($item,$key){ return $item->alliencePic->allience; })->unique();
         $data['location'] = $data['demonstration']->map(function($item,$key){ return $item->location; })->unique();
         $data['top_alience'] = $data['demonstration']->map(function($item,$key){ return $item->alliencePic->allience; })->countBy('allience_name')->toArray();
