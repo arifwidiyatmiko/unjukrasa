@@ -86,12 +86,12 @@
                 </div>
             </div>
 
-            <div class="col-xs-6 col-sm-6 mt-2 ">
+            <div class="col-xs-3 col-sm-3 mt-2 ">
                 <div class="card shadow mb-4">
                     <!-- Card Header - Accordion -->
                     <a href="#tab1" class="d-block card-header py-3" data-toggle="collapse"
                         role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                        <h6 class="m-0 font-weight-bold text-primary">Diagram Target Demonstrasi </h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Target Demonstrasi </h6>
                     </a>
                     <!-- Card Content - Collapse -->
                     <div class="collapse" id="tab1">
@@ -101,17 +101,33 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-6 col-sm-6 mt-2 ">
+            <div class="col-xs-3 col-sm-3 mt-2 ">
                 <div class="card shadow mb-4">
                     <!-- Card Header - Accordion -->
                     <a href="#tab2" class="d-block card-header py-3" data-toggle="collapse"
                         role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                        <h6 class="m-0 font-weight-bold text-primary">Diagram Demonstrasi Astra</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Demonstrasi Astra</h6>
                     </a>
                     <!-- Card Content - Collapse -->
                     <div class="collapse" id="tab2">
                         <div class="card-body">
                             <canvas id="chart-area1"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-6 col-sm-6 mt-2 ">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Accordion -->
+                    <a href="#tab4" class="d-block card-header py-3" data-toggle="collapse"
+                        role="button" aria-expanded="true" aria-controls="collapseCardExample">
+                        <h6 class="m-0 font-weight-bold text-primary">Aliansi Pendemo Astra</h6>
+                    </a>
+                    <!-- Card Content - Collapse -->
+                    <div class="collapse" id="tab4">
+                        <div class="card-body">
+                            <canvas id="chart-area2"></canvas>
                         </div>
                     </div>
                 </div>
@@ -361,9 +377,16 @@
             }
         });
     });
+    var dynamicColors = function() {
+        var r = Math.floor(Math.random() * 255);
+        var g = Math.floor(Math.random() * 255);
+        var b = Math.floor(Math.random() * 255);
+        return "rgb(" + r + "," + g + "," + b + ")";
+        };
     const demo_astra = {{$demo_astra->count()}};
     const demo = {{$demonstration->count()-$demo_astra->count()}};
     const grouped_demo_count = {{$demo_astra_grouped->count()}};
+    const astra_top_allience = {{count($astra_top_alience)}};
     var color = Chart.helpers.color;
     var barChartData = {
         labels: @php echo json_encode($days); @endphp.map(String),
@@ -424,23 +447,57 @@
     };
     @endif
 
+    @if (count($astra_top_alience) > 0)
+    var coloR = [];
+    @foreach ($astra_top_alience as $key=>$val)
+    coloR.push(dynamicColors());
+    @endforeach
+    var pieConfig2 = {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [
+                    @foreach ($astra_top_alience as $key=>$val)
+                    {{$val}},
+                    @endforeach
+                ],
+                backgroundColor: coloR,
+            }],
+            labels: [
+                    @foreach ($astra_top_alience as $key=>$val)
+                    '{{$key}}',
+                    @endforeach
+            ]
+        },
+        options: { scales: { scaleLabel: { fontSize: 13 } } }
+    };
+    @endif
+
     window.onload = function() {
+        var cts = document.getElementById('chart-area2').getContext('2d');
         var ctz = document.getElementById('chart-area1').getContext('2d');
         var cty = document.getElementById('chart-area').getContext('2d');
         var ctx = document.getElementById('canvas').getContext('2d');
         if(demo == 0 && demo_astra == 0){
             cty.fillStyle = "#3e3e3e";
             cty.font = "16px Arial";
-            cty.fillText('Data Kosong',170,70);
+            cty.fillText('Data Kosong',50,70);
         }else{
             window.myPie = new Chart(cty, pieConfig);
         }
         if (grouped_demo_count == 0) {
             ctz.fillStyle = "#3e3e3e";
             ctz.font = "16px Arial";
-            ctz.fillText('Data Kosong',170,70);
+            ctz.fillText('Data Kosong',50,70);
         } else {
             window.myPie = new Chart(ctz, pieConfig1);
+        }
+        if (astra_top_allience == 0) {
+            cts.fillStyle = "#3e3e3e";
+            cts.font = "16px Arial";
+            cts.fillText('Data Kosong',170,70);
+        } else {
+            window.myPie = new Chart(cts, pieConfig2);
         }
         window.myBar = new Chart(ctx, {
             type: 'bar',

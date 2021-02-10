@@ -66,6 +66,9 @@ class DashboardController extends Controller
                 return $value;
             }
         });
+        $data['astra_top_alience'] = $data['demo_astra']->map(function($item,$key){ return $item->alliencePic->allience; })->countBy('allience_name')->toArray();
+        arsort($data['astra_top_alience']);
+        // return dd($data);
         $data['demo_astra_grouped'] = $data['demo_astra']->groupBy('status');
         $data['alience'] = $data['demonstration']->map(function($item,$key){ return $item->alliencePic->allience; })->unique();
         $data['location'] = $data['demonstration']->map(function($item,$key){ return $item->location; })->unique();
