@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\City;
 use App\Location;
+use Illuminate\Support\Facades\DB;
+
+// DB
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
@@ -29,6 +32,7 @@ class LocationController extends Controller
         $totalFiltered = $totalData;
         if (empty($request->input('search.value'))) {
             $institutes = City::offset($start)->limit($limit)->get();
+            $totalFiltered = City::offset($start)->limit($limit)->count();
         } else {
             $search = $request->input('search.value');
             $institutes = City::whereHas('province', function ($query) use ($search) {
@@ -36,15 +40,15 @@ class LocationController extends Controller
                     'name',
                     'LIKE',
                     "%{$search}%"
-                )->orWhere('name', 'LIKE', "%{$search}%");
-            })->offset($start)->limit($limit)->orderBy($order, $dir)->get();
+                );
+            })->orWhere('name', 'LIKE', "%{$search}%")->offset($start)->limit($limit)->orderBy($order, $dir)->get();
             $totalFiltered = City::whereHas('province', function ($query) use ($search) {
                 return $query->where(
                     'name',
                     'LIKE',
                     "%{$search}%"
-                )->orWhere('name', 'LIKE', "%{$search}%");
-            })->offset($start)->limit($limit)->orderBy($order, $dir)->count();
+                );
+            })->orWhere('name', 'LIKE', "%{$search}%")->count();
         }
         $data = array();
 
@@ -92,7 +96,7 @@ class LocationController extends Controller
             $totalFiltered = Location::where('building_name','LIKE',"%{$search}%")->orWhere('address','LIKE',"%{$search}%")
                         ->whereHas('city',function($query) use($search){
                             return $query->where('name','LIKE',"%{$search}%");
-                        })->offset($start)->limit($limit)->orderBy($order, $dir)->count();
+                        })->count();
         }
         $data = array();
 

@@ -164,7 +164,7 @@ class DashboardController extends Controller
                 return $query->whereHas('allience', function ($q) use ($search) {
                     return $q->where( 'allience_name', 'LIKE',  "%{$search}%");
                 });
-            })->orWhere('mass_amount','LIKE',"%{$search}%")->offset($start)->limit($limit)->orderBy($order, $dir)->count();
+            })->orWhere('mass_amount','LIKE',"%{$search}%")->count();
         }
         $data = array();
 

@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Aliance;
 use App\AlliencePic;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
@@ -16,9 +17,8 @@ class AlianceController extends Controller
     {
         $columns = array(
             0 => 'id',
-            1 => 'name',
-            2 => 'phone',
-            3 => 'option',
+            1 => 'allience_name',
+            2 => 'option',
         );
         $limit = $request->input('length');
         $start = $request->input('start');
@@ -31,18 +31,19 @@ class AlianceController extends Controller
         if (empty($request->input('search.value'))) {
             $institutes = Aliance::offset($start)->limit($limit)->get();
         } else {
+            \DB::enableQueryLog();
             $search = $request->input('search.value');
             $institutes = Aliance::where('allience_name','LIKE',"%{$search}%")->offset($start)->limit($limit)->orderBy($order, $dir)->get();
-            $totalFiltered = Aliance::where('allience_name','LIKE',"%{$search}%")->offset($start)->limit($limit)->orderBy($order, $dir)->count();
+            $totalFiltered = Aliance::where('allience_name','LIKE',"%{$search}%")->count();
         }
+        // return dd(\DB::getQueryLog());
+        // return dd($totalFiltered);
         $data = array();
 
         $data = $institutes->map(function ($item, $key) use ($start) {
             $item->no = $start + $key + 1;
             $item->option = '<a class="btn btn-primary" href="'.URL::to('dashboard/alience/detail/'.$item->id).'">Detail</a> 
             <a class="btn btn-warning" href="'.URL::to('dashboard/alience/update/'.$item->id).'">Update</a>';
-            // $item->cityName = ($item->city != NULL) ? $item->city->name : '-';
-            // $item->branch_astra = ($item->branch_astra != FALSE) ? '<p class="text text-danger">YA</p>' : '<p class="text text-black">TIDAK</p>';
             return $item;
         });
         $json_data = array(
@@ -145,7 +146,7 @@ class AlianceController extends Controller
         } else {
             $search = $request->input('search.value');
             $institutes = AlliencePic::where('name','LIKE',"%{$search}%")->orWhere('phone','LIKE',"%{$search}%")->offset($start)->limit($limit)->orderBy($order, $dir)->get();
-            $totalFiltered = AlliencePic::where('name','LIKE',"%{$search}%")->orWhere('phone','LIKE',"%{$search}%")->offset($start)->limit($limit)->orderBy($order, $dir)->count();
+            $totalFiltered = AlliencePic::where('name','LIKE',"%{$search}%")->orWhere('phone','LIKE',"%{$search}%")->count();
         }
         $data = array();
 

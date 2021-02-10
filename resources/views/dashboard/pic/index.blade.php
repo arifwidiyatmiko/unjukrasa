@@ -24,6 +24,7 @@
                                 <th>#</th>
                                 <th>Nama Koordinator</th>
                                 <th>Nomor Kontak</th>
+                                <th>Afiliasi</th>
                                 <th>Pilihan</th>
                             </tr>
                         </thead>
@@ -50,6 +51,7 @@
             {"data":"no",orderable: false},
             {"data":"name",orderable: false},
             {"data":"phone",orderable: false},
+            {"data":"afiliasi",orderable: false},
             {"data":"option",orderable: false},
             // {"data":"updated_at"},
         ],

@@ -51,6 +51,7 @@
             {"data":"cityName",orderable: false},
             // {"data":"updated_at"},
         ],
+        "pagingType": "numbers",
     });
     
     $(document).ready(function() {

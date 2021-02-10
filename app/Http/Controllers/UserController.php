@@ -39,7 +39,7 @@ class UserController extends Controller
         } else {
             $search = $request->input('search.value');
             $institutes = User::where('name','LIKE',"%{$search}%")->orWhere('email','LIKE',"%{$search}%")->offset($start)->limit($limit)->orderBy($order, $dir)->get();
-            $totalFiltered = User::where('name','LIKE',"%{$search}%")->orWhere('email','LIKE',"%{$search}%")->offset($start)->limit($limit)->orderBy($order, $dir)->count();
+            $totalFiltered = User::where('name','LIKE',"%{$search}%")->orWhere('email','LIKE',"%{$search}%")->count();
         }
         $data = array();
 

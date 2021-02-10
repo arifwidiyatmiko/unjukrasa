@@ -24,9 +24,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Nama Koordinator</th>
-                                <th>Nomor Kontak</th>
-                                <th>Pilihan</th>
+                                <th>Nama Aliansi</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
