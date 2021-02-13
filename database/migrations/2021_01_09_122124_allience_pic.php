@@ -15,9 +15,8 @@ class AlliencePic extends Migration
     {
         Schema::create('allience_pic', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->longText('name');
-            $table->longText('phone');
             $table->unsignedBigInteger('id_allience');
+            $table->unsignedBigInteger('id_pic');
             $table->timestamps();
         });
     }

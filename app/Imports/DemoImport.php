@@ -2,11 +2,11 @@
 
 namespace App\Imports;
 
-
 use App\Aliance;
 use App\AlliencePic;
 use App\Branch;
 use App\Demonstration;
+use App\Pic;
 use App\Location;
 use Carbon\Carbon;
 
@@ -24,6 +24,7 @@ class DemoImport implements ToCollection, WithStartRow
         $alience = [];
         $aliencepic = [];
         $location = [];
+        $pic = [];
         $branch = [];
 
         foreach ($collection as $row) {
@@ -54,15 +55,33 @@ class DemoImport implements ToCollection, WithStartRow
             if(Aliance::where('allience_name','=',$value)->count() == 0){
                 try {
                     Aliance::create($value);
-                    } catch (\Illuminate\Database\QueryException $exception) {
-                    return dd(['daskdo'=>$exception,'sds'=>$key]);
-                    }
+                } catch (\Illuminate\Database\QueryException $exception) {
+                    return dd(['daskdo'=>$exception,'error di index'=>$key]);
+                }
             }
         }
+
         foreach ($collection as $row) {
-            $aliencepic[] = [
+            $pic[] = [
                 'name' => strtoupper(trim($row[12])),
                 'phone' => ($row[13] == NULL) ? NULL: $row[13],
+            ];
+        }
+        $pic = collect($pic)->unique();
+        // return dd($alience);
+        foreach ($pic as $key => $value) {
+            if(Pic::where('name','=',$value)->count() == 0){
+                try {
+                    Pic::create($value);
+                } catch (\Illuminate\Database\QueryException $exception) {
+                    return dd(['daskdo'=>$exception,'error di index'=>$key]);
+                }
+            }
+        }
+
+        foreach ($collection as $row) {
+            $aliencepic[] = [
+                'id_pic' => Pic::where('name','=',strtoupper(trim($row[12])))->firstOrFail()->id,
                 'id_allience' => Aliance::where('allience_name','=',strtoupper(trim($row[7])))->firstOrFail()->id,
             ];
         }
@@ -92,7 +111,8 @@ class DemoImport implements ToCollection, WithStartRow
                 $demonstration = [
                     'date' => Carbon::parse($date)->format('Y-m-d'),
                     'id_location' => Location::where('building_name', '=', strtoupper(trim($row[4])))->firstOrFail()->id,
-                    'id_allience' => AlliencePic::where('name', '=', strtoupper(trim($row[12])))->firstOrFail()->id,
+                    'id_allience' => Aliance::where('allience_name', '=', strtoupper(trim($row[7])))->firstOrFail()->id,
+                    'id_pic' => Pic::where('name', '=', strtoupper(trim($row[12])))->firstOrFail()->id,
                     'status' => strtoupper($row[8]),
                     'issue' => strtoupper($row[9]),
                     'basis_universitas' => $row[11],

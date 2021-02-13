@@ -68,8 +68,8 @@ class DashboardController extends Controller
         });
         $data['astra_top_alience'] = $data['demo_astra']->map(function($item,$key){ return $item->alliencePic->allience; })->countBy('allience_name')->toArray();
         arsort($data['astra_top_alience']);
-        // return dd($data['astra_top_alience']);
         $data['demo_astra_grouped'] = $data['demo_astra']->groupBy('status');
+        // return dd($data);
         $data['alience'] = $data['demonstration']->map(function($item,$key){ return $item->alliencePic->allience; })->unique();
         $data['location'] = $data['demonstration']->map(function($item,$key){ return $item->location; })->unique();
         $data['top_alience'] = $data['demonstration']->map(function($item,$key){ return $item->alliencePic->allience; })->countBy('allience_name')->toArray();
@@ -105,7 +105,7 @@ class DashboardController extends Controller
             return Redirect::to(url()->previous())->withErrors($valid);
         } else {
             Excel::import(new DemoImport, request()->file('inputFile'),'UTF-8');
-            return Redirect::to('dashboard/location');
+            return Redirect::to('dashboard/import')->with(['message','Berkas berhasil disimpan']);
         }
     }
 

@@ -18,11 +18,11 @@ class UserSeeder extends Seeder
         $faker = Faker::create();
         // $asdep = Asdep::all()->pluck('id')->toArray();
         User::create(array(
-            'name' => 'Sarah Amelia',
-            'email' => 'saraho@gmail.com',
+            'name' => 'Arif Widiyatmiko',
+            'email' => 'arifwidiyatmiko@ai.astra.co.id',
             'email_verified_at' => now(),
             'role' => 'admin',
-            'password' => bcrypt('password'),
+            'password' => bcrypt('Friday1407!'),
             // 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
             'status' => true,

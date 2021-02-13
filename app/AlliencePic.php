@@ -9,7 +9,7 @@ class AlliencePic extends Model
     protected $table = 'allience_pic';
     protected $primaryKey = 'id';
     public $timestamps = true;
-    protected $fillable = ['id', 'name', 'phone','id_allience'];
+    protected $fillable = ['id', 'id_pic','id_allience'];
 
     function demonstration()
     {

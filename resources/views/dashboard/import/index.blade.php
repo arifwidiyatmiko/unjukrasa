@@ -20,6 +20,14 @@
                     </div>
                 </div>
             @endif
+            @if (\Session::has('success'))
+            <div class="col-lg-12 sm-p-t-15">
+                <div class="alert alert-danger" role="alert">
+                    <button class="close" data-dismiss="alert"></button>
+                    <strong>{!! \Session::get('success') !!}</strong>
+                </div>
+            </div>
+            @endif
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Form Import</h6>

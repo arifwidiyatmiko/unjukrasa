@@ -423,22 +423,26 @@
     };
     
     @if ($demo_astra_grouped->count() > 0)
+    var coloR = [];
+    @foreach ($demo_astra_grouped as $key=>$val)
+    coloR.push(dynamicColors());
+    @endforeach
     var pieConfig1 = {
         type: 'pie',
         data: {
             datasets: [{
                 data: [
-                    {{count($demo_astra_grouped[1])}},
-                    {{count($demo_astra_grouped[''])}},
+                    @foreach ($demo_astra_grouped as $key=>$val)
+                    {{count($val)}},
+                    @endforeach
                 ],
-                backgroundColor: [
-                    window.chartColors.green,
-                    window.chartColors.yellow,
-                ],
+                backgroundColor: coloR,
             }],
             labels: [
-                'Terlaksana ({{count($demo_astra_grouped[1])}})',
-                'Tidak Terlaksana ({{count($demo_astra_grouped[''])}})',
+                
+                @foreach ($demo_astra_grouped as $key=>$val)
+                '{{($key == '')? 'Tidak Terlaksana':'Terlaksana'}}',
+                @endforeach
             ]
         },
         options: {

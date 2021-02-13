@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Location extends Migration
+class Pic extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,10 @@ class Location extends Migration
      */
     public function up()
     {
-        Schema::create('location', function (Blueprint $table) {
+        Schema::create('pic', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->longText('building_name');
-            $table->unsignedBigInteger('id_city')->nullable();
-            $table->longText('address')->nullable();
-            $table->text('branch_astra')->nullable();
-            $table->unsignedBigInteger('id_branch')->nullable();
+            $table->longText('name');
+            $table->longText('phone')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ class Location extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('location');
+        Schema::dropIfExists('pic');
     }
 }
