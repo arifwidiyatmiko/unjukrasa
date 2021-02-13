@@ -18,6 +18,6 @@ class Pic extends Model
 
     public function allience()
     {
-        return $this->belongsTo('App\Aliance', 'id_pic', 'id');
+        return $this->hasMany('App\AlliencePic', 'id_pic', 'id');
     }
 }
