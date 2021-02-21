@@ -33,7 +33,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                    Total Demonstrasi</div>
+                                    Jumlah Demonstrasi</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{$demonstration->count()}}</div>
                             </div>
                         </div>
@@ -48,7 +48,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                     Total Aliansi</div>
+                                     Jumlah Aliansi</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{$alience->count()}}</div>
                             </div>
                         </div>
@@ -63,7 +63,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                     Total Lokasi</div>
+                                     Jumlah Lokasi</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{$location->count()}}</div>
                             </div>
                         </div>
@@ -86,27 +86,12 @@
                 </div>
             </div>
 
-            <div class="col-xs-3 col-sm-3 mt-2 ">
-                <div class="card shadow mb-4">
-                    <!-- Card Header - Accordion -->
-                    <a href="#tab1" class="d-block card-header py-3" data-toggle="collapse"
-                        role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                        <h6 class="m-0 font-weight-bold text-primary">Target Demonstrasi </h6>
-                    </a>
-                    <!-- Card Content - Collapse -->
-                    <div class="collapse" id="tab1">
-                        <div class="card-body">
-                            <canvas id="chart-area"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-3 col-sm-3 mt-2 ">
+            <div class="col-xs-6 col-sm-6 mt-2 ">
                 <div class="card shadow mb-4">
                     <!-- Card Header - Accordion -->
                     <a href="#tab2" class="d-block card-header py-3" data-toggle="collapse"
                         role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                        <h6 class="m-0 font-weight-bold text-primary">Demonstrasi Astra</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Demonstrasi Astra berdasarlam Status</h6>
                     </a>
                     <!-- Card Content - Collapse -->
                     <div class="collapse" id="tab2">
@@ -383,8 +368,6 @@
         var b = Math.floor(Math.random() * 255);
         return "rgb(" + r + "," + g + "," + b + ")";
         };
-    const demo_astra = {{$demo_astra->count()}};
-    const demo = {{$demonstration->count()-$demo_astra->count()}};
     const grouped_demo_count = {{$demo_astra_grouped->count()}};
     const astra_top_allience = {{count($astra_top_alience)}};
     var color = Chart.helpers.color;
@@ -399,29 +382,6 @@
         }]
 
     };
-    var pieConfig = {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: [
-                    demo_astra,
-                    demo,
-                ],
-                backgroundColor: [
-                    window.chartColors.red,
-                    window.chartColors.orange,
-                ],
-            }],
-            labels: [
-                'Astra',
-                'Non Astra',
-            ]
-        },
-        options: {
-            responsive: true
-        }
-    };
-    
     @if ($demo_astra_grouped->count() > 0)
     var coloR = [];
     @foreach ($demo_astra_grouped as $key=>$val)
@@ -480,15 +440,15 @@
     window.onload = function() {
         var cts = document.getElementById('chart-area2').getContext('2d');
         var ctz = document.getElementById('chart-area1').getContext('2d');
-        var cty = document.getElementById('chart-area').getContext('2d');
+        // var cty = document.getElementById('chart-area').getContext('2d');
         var ctx = document.getElementById('canvas').getContext('2d');
-        if(demo == 0 && demo_astra == 0){
-            cty.fillStyle = "#3e3e3e";
-            cty.font = "16px Arial";
-            cty.fillText('Data Kosong',50,70);
-        }else{
-            window.myPie = new Chart(cty, pieConfig);
-        }
+        // if(demo == 0 && demo_astra == 0){
+        //     cty.fillStyle = "#3e3e3e";
+        //     cty.font = "16px Arial";
+        //     cty.fillText('Data Kosong',50,70);
+        // }else{
+        //     window.myPie = new Chart(cty, pieConfig);
+        // }
         if (grouped_demo_count == 0) {
             ctz.fillStyle = "#3e3e3e";
             ctz.font = "16px Arial";
